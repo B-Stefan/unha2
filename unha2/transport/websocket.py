@@ -64,13 +64,14 @@ async def ws_callback_loop(ws, handler, **handlers):
         elif msg.type == aiohttp.WSMsgType.ERROR:
             break
 
-def get_url(host):
+def get_url(host,use_ssl):
     sockjs_id = random.randint(100, 999)
     client_id = random.randint(1, 100)
-    return 'https://%s/sockjs/%s/unha2%s/websocket' % (host, sockjs_id, client_id)
+    protocol = 'https' if use_ssl else 'http'  
+    return '%s://%s/sockjs/%s/unha2%s/websocket' % (protocol,host, sockjs_id, client_id)
 
 def session(loop):
     return aiohttp.ClientSession(loop=loop)
 
-def connect(session, host):
-    return session.ws_connect(get_url(host))
+def connect(session, host, use_ssl=True):
+    return session.ws_connect(get_url(host,use_ssl))
